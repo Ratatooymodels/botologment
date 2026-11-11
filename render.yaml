@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: card-bot
+    runtime: python
+    plan: free
+    # веса модели вырезки скачиваются при сборке, а не при первом клиенте
+    buildCommand: pip install -r requirements-lite.txt && python -c "from rembg import new_session; new_session('silueta')"
+    startCommand: python bot.py
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: U2NET_HOME
+        value: /opt/render/project/src/.u2net
+      - key: REMBG_BACKEND
+        value: local
+      - key: REMBG_MODEL
+        value: silueta         # компактная модель, влезает в 512 МБ
+      - key: CARD_WIDTH
+        value: "900"
+      - key: MAX_PARALLEL_JOBS
+        value: "1"
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
